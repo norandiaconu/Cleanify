@@ -1,22 +1,28 @@
 // ==UserScript==
 // @name         Cleanify
-// @version      1.3
+// @version      1.4
 // @description  Clean Spotify artists page (Chrome/Firefox).
 // @author       Noran D
 // @match        https://open.spotify.com/collection/artists
 // ==/UserScript==
 var currTitle = "1";
 var oldTitle = "2";
+var currButton = "3";
+var oldButton = "Play";
 var check = document.querySelector('head > title');
 var observer = new window.MutationObserver(function(mutations) {
     mutations.forEach(function(mutation) {
-        currTitle = document.title;
-        if (currTitle != oldTitle) {
-            if (currTitle == "Your Library - Artists") {
-                organize();
+        currButton = document.evaluate('//button[@title="Previous"]/following::button[1]/@title', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.nodeValue;
+        if (currButton == oldButton) {
+            currTitle = document.title;
+            if (currTitle != oldTitle) {
+                if (currTitle == "Your Library - Artists") {
+                    organize();
+                }
             }
+            oldTitle = currTitle;
+            oldButton = currButton;
         }
-        oldTitle = currTitle;
     });
 });
 observer.observe(check, { childList: true });
