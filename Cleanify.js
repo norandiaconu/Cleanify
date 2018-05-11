@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name         Cleanify
-// @version      1.4
+// @version      1.5
 // @description  Clean Spotify artists page (Chrome/Firefox).
 // @author       Noran D
 // @match        https://open.spotify.com/collection/artists
+// @require      https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js
 // ==/UserScript==
 var currTitle = "1";
 var oldTitle = "2";
@@ -12,20 +13,34 @@ var oldButton = "Play";
 var check = document.querySelector('head > title');
 var observer = new window.MutationObserver(function(mutations) {
     mutations.forEach(function(mutation) {
-        currButton = document.evaluate('//button[@title="Previous"]/following::button[1]/@title', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.nodeValue;
-        if (currButton == oldButton) {
-            currTitle = document.title;
-            if (currTitle != oldTitle) {
-                if (currTitle == "Your Library - Artists") {
-                    organize();
-                }
-            }
-            oldTitle = currTitle;
-            oldButton = currButton;
+        var ads = document.getElementsByClassName("ads-container")[0];
+        ads.style.visibility = "hidden";
+        var htmlString = $('body').html().toString();
+        var index = htmlString.indexOf("loading.gif");
+        if (index != -1) {
+            setTimeout(function(){
+                prepOrganize();
+            }, 5000);
+        } else {
+            prepOrganize();
         }
     });
 });
 observer.observe(check, { childList: true });
+
+function prepOrganize() {
+    currButton = document.evaluate('//button[@title="Previous"]/following::button[1]/@title', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.nodeValue;
+    if (currButton == oldButton) {
+        currTitle = document.title;
+        if (currTitle != oldTitle) {
+            if (currTitle == "Your Library - Artists") {
+                organize();
+            }
+        }
+        oldTitle = currTitle;
+        oldButton = currButton;
+    }
+}
 
 function organize() {
     var list = document.getElementsByClassName("media-object mo-artist");
@@ -50,6 +65,4 @@ function organize() {
     }
     var list3 = document.getElementsByClassName("media-object mo-artist");
     list3[0].parentNode.appendChild(list3[list3.length - 1]);
-    var ads = document.getElementsByClassName("ads-container")[0];
-    ads.style.visibility = "hidden";
 }
