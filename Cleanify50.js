@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Cleanify
+// @name         Cleanify50
 // @version      1.6
-// @description  Clean Spotify artists page with over 50 artists(Chrome/Firefox).
+// @description  Clean Spotify artists page with 50 artists or less(Chrome/Firefox).
 // @author       Noran D
 // @match        https://open.spotify.com/collection/artists
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js
@@ -15,12 +15,9 @@ var observer = new window.MutationObserver(function(mutations) {
     mutations.forEach(function(mutation) {
         var ads = document.getElementsByClassName("ads-container")[0];
         ads.style.visibility = "hidden";
-        var htmlString = $('body').html().toString();
-        var index = htmlString.indexOf("loading.gif");
-        window.scrollBy(0, 1000);
-        if (index == -1) {
+        setTimeout(function(){
             prepOrganize();
-        }
+        }, 100);
     });
 });
 observer.observe(check, { childList: true });
