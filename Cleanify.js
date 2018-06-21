@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Cleanify
-// @version      1.6
+// @version      1.7
 // @description  Clean Spotify artists page with over 50 artists(Chrome/Firefox).
 // @author       Noran D
 // @match        https://open.spotify.com/collection/artists
@@ -17,9 +17,11 @@ var observer = new window.MutationObserver(function(mutations) {
         ads.style.visibility = "hidden";
         var htmlString = $('body').html().toString();
         var index = htmlString.indexOf("loading.gif");
-        window.scrollBy(0, 1000);
+        window.scrollBy(0, 4000);
         if (index == -1) {
-            prepOrganize();
+            setTimeout(function(){
+                prepOrganize();
+            }, 4000);
         }
     });
 });
@@ -43,6 +45,7 @@ function organize() {
     var list = document.getElementsByClassName("media-object mo-artist");
     var list2 = document.getElementsByClassName("mo-info-name");
     var names = [];
+    var names2 = [];
     for (i=0; i<list.length; i++)
     {
         names.push(list2[i].text);
@@ -51,15 +54,23 @@ function organize() {
     for (i=0; i<names.length; i++) {
         for (j=0; j<list.length; j++) {
             if (list[j].innerHTML.includes(names[i])) {
-                list[0].parentNode.parentNode.parentNode.parentNode.appendChild(list[j]);
-                list[j].setAttribute("style", "min-width:100px; max-width:100px;");
+                list[j].setAttribute("style", "min-width:90px; max-width:90px;");
+                if (!names2.includes(names[i])) {
+                    list[0].parentNode.parentNode.parentNode.parentNode.appendChild(list[j]);
+                    names2.push(names[i]);
+                }
             }
         }
     }
-    for (i=0; i<list.length; i++)
+    var difference = names.length - names2.length;
+    for (i=0; i<names2.length; i++)
     {
-        list[0].parentNode.removeChild(list[0].parentNode.firstChild);
+        list[0].parentNode.parentNode.parentNode.parentNode.removeChild(list[0].parentNode.parentNode.parentNode.parentNode.firstChild);
     }
-    var list3 = document.getElementsByClassName("media-object mo-artist");
-    list3[0].parentNode.appendChild(list3[list3.length - 1]);
+    list[0].parentNode.parentNode.parentNode.parentNode.appendChild(list[list.length - 1]);
+    for (i=0; i<difference; i++) {
+        list[0].parentNode.parentNode.parentNode.parentNode.removeChild(list[0].parentNode.parentNode.parentNode.parentNode.firstChild);
+    }
+    $('img[src="/static/assets/images/loading.gif"]').remove();
+    return;
 }
