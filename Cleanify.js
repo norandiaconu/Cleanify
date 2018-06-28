@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Cleanify
-// @version      1.7
+// @version      1.71
 // @description  Clean Spotify artists page with over 50 artists(Chrome/Firefox).
 // @author       Noran D
 // @match        https://open.spotify.com/collection/artists
@@ -60,16 +60,26 @@ function organize() {
                     names2.push(names[i]);
                 }
             }
+            if (names[i].includes("&")) {
+                if (list[j].innerHTML.includes("&amp;")) {
+                    var tempName = names[i];
+                    var tempList = list[j].innerHTML;
+                    tempName = tempName.replace("&", "");
+                    tempList = tempList.replace("&amp;", "");
+                    if (tempList.includes(tempName)) {
+                        list[j].setAttribute("style", "min-width:90px; max-width:90px;");
+                        if (!names2.includes(names[i])) {
+                            list[0].parentNode.parentNode.parentNode.parentNode.appendChild(list[j]);
+                            names2.push(names[i]);
+                        }
+                    }
+                }
+            }
         }
     }
-    var difference = names.length - names2.length;
-    for (i=0; i<names2.length; i++)
+  	for (i=0; i<list.length; i++)
     {
-        list[0].parentNode.parentNode.parentNode.parentNode.removeChild(list[0].parentNode.parentNode.parentNode.parentNode.firstChild);
-    }
-    list[0].parentNode.parentNode.parentNode.parentNode.appendChild(list[list.length - 1]);
-    for (i=0; i<difference; i++) {
-        list[0].parentNode.parentNode.parentNode.parentNode.removeChild(list[0].parentNode.parentNode.parentNode.parentNode.firstChild);
+        list[0].parentNode.removeChild(list[0].parentNode.firstChild);
     }
     $('img[src="/static/assets/images/loading.gif"]').remove();
     return;

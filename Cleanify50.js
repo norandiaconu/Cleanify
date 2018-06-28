@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Cleanify50
-// @version      1.6
+// @version      1.61
 // @description  Clean Spotify artists page with 50 artists or less(Chrome/Firefox).
 // @author       Noran D
 // @match        https://open.spotify.com/collection/artists
@@ -50,6 +50,18 @@ function organize() {
             if (list[j].innerHTML.includes(names[i])) {
                 list[0].parentNode.parentNode.parentNode.parentNode.appendChild(list[j]);
                 list[j].setAttribute("style", "min-width:100px; max-width:100px;");
+            }
+            if (names[i].includes("&")) {
+                if (list[j].innerHTML.includes("&amp;")) {
+                    var tempName = names[i];
+                    var tempList = list[j].innerHTML;
+                    tempName = tempName.replace("&", "");
+                    tempList = tempList.replace("&amp;", "");
+                    if (tempList.includes(tempName)) {
+                        list[0].parentNode.parentNode.parentNode.parentNode.appendChild(list[j]);
+                        list[j].setAttribute("style", "min-width:100px; max-width:100px;");
+                    }
+                }
             }
         }
     }
