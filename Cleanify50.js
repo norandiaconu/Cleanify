@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Cleanify50
-// @version      1.61
+// @version      1.8
 // @description  Clean Spotify artists page with 50 artists or less(Chrome/Firefox).
 // @author       Noran D
 // @match        https://open.spotify.com/collection/artists
@@ -13,8 +13,7 @@ var oldButton = "Play";
 var check = document.querySelector('head > title');
 var observer = new window.MutationObserver(function(mutations) {
     mutations.forEach(function(mutation) {
-        var ads = document.getElementsByClassName("ads-container")[0];
-        ads.style.visibility = "hidden";
+		$('.AdsContainer').hide();
         setTimeout(function(){
             prepOrganize();
         }, 100);
@@ -40,35 +39,42 @@ function organize() {
     var list = document.getElementsByClassName("media-object mo-artist");
     var list2 = document.getElementsByClassName("mo-info-name");
     var names = [];
-    for (i=0; i<list.length; i++)
+    var names2 = [];
+    for (var i=0; i<list.length; i++)
     {
         names.push(list2[i].text);
     }
     names.sort();
-    for (i=0; i<names.length; i++) {
-        for (j=0; j<list.length; j++) {
-            if (list[j].innerHTML.includes(names[i])) {
-                list[0].parentNode.parentNode.parentNode.parentNode.appendChild(list[j]);
-                list[j].setAttribute("style", "min-width:100px; max-width:100px;");
+    for (var j=0; j<names.length; j++) {
+        for (var k=0; k<list.length; k++) {
+            if (list[k].innerHTML.includes(names[j])) {
+                list[k].setAttribute("style", "min-width:90px; max-width:90px;");
+                if (!names2.includes(names[j])) {
+                    list[0].parentNode.parentNode.parentNode.parentNode.appendChild(list[k]);
+                    names2.push(names[j]);
+                }
             }
-            if (names[i].includes("&")) {
-                if (list[j].innerHTML.includes("&amp;")) {
-                    var tempName = names[i];
-                    var tempList = list[j].innerHTML;
-                    tempName = tempName.replace("&", "");
-                    tempList = tempList.replace("&amp;", "");
-                    if (tempList.includes(tempName)) {
-                        list[0].parentNode.parentNode.parentNode.parentNode.appendChild(list[j]);
-                        list[j].setAttribute("style", "min-width:100px; max-width:100px;");
-                    }
+            if (names[j].includes("&")) {
+                if (list[k].innerHTML.includes("&amp;")) {
+                  var tempName = names[j];
+                  var tempList = list[k].innerHTML;
+                  tempName = tempName.replace("&", "");
+                  tempList = tempList.replace("&amp;", "");
+                  if (tempList.includes(tempName)) {
+                      list[k].setAttribute("style", "min-width:90px; max-width:90px;");
+                      if (!names2.includes(names[j])) {
+                          list[0].parentNode.parentNode.parentNode.parentNode.appendChild(list[k]);
+                          names2.push(names[j]);
+                      }
+                  }
                 }
             }
         }
     }
-    for (i=0; i<list.length; i++)
+  	for (var l=0; l<list.length; l++)
     {
         list[0].parentNode.removeChild(list[0].parentNode.firstChild);
     }
-    var list3 = document.getElementsByClassName("media-object mo-artist");
-    list3[0].parentNode.appendChild(list3[list3.length - 1]);
+    $('img[src="/static/assets/images/loading.gif"]').remove();
+    return;
 }
