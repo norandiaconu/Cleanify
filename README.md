@@ -1,4 +1,4 @@
-# Cleanify - 1.8
+# Cleanify - 1.9
 Use the Cleanify script if your artists page contains over 50 artists.
 
 # Cleanify50 - 1.8

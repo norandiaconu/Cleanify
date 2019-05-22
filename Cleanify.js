@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         Cleanify
-// @version      1.8
+// @version      1.9
 // @description  Clean Spotify artists page with over 50 artists(Chrome/Firefox).
 // @author       Noran D
 // @match        https://open.spotify.com/collection/artists
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js
 // ==/UserScript==
+
 var currTitle = "1";
 var oldTitle = "2";
 var currButton = "3";
@@ -16,13 +17,15 @@ var observer = new window.MutationObserver(function(mutations) {
         $('.AdsContainer').hide();
         var htmlString = $('body').html().toString();
         var index = htmlString.indexOf("loading.gif");
-        window.scrollBy(0, 4000);
+        var scrollNodes = document.getElementsByClassName("main-view-container__scroll-node");
+        var scroller = scrollNodes[0];
+        scroller.scrollTop += 4000;
         if (index == -1) {
             setTimeout(function(){
-                window.scrollBy(0, 4000);
+                scroller.scrollTop += 4000;
             }, 2000);
             setTimeout(function(){
-                window.scrollBy(0, 4000);
+                scroller.scrollTop += 4000;
             }, 3000);
             setTimeout(function(){
                 prepOrganize();
