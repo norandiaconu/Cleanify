@@ -26,7 +26,7 @@ function prepOrganize() {
     if (currButton == oldButton) {
         currTitle = document.title;
         if (currTitle != oldTitle) {
-            if (currTitle == "Your Library - Artists") {
+            if (currTitle == "Spotify – Your Library") {
                 organize();
             }
         }
